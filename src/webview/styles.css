@@ -1,0 +1,202 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--vscode-font-family);
+  color: var(--vscode-foreground);
+  background: var(--vscode-sideBar-background);
+  padding: 12px;
+  user-select: none;
+}
+
+/* Tab bar */
+.tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--vscode-panel-border);
+  padding-bottom: 8px;
+}
+
+.tab-btn {
+  flex: 1;
+  padding: 6px 4px;
+  background: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--vscode-foreground);
+  cursor: pointer;
+  font-size: 11px;
+  font-family: var(--vscode-font-family);
+  opacity: 0.6;
+  transition: opacity 0.15s, border-color 0.15s;
+}
+
+.tab-btn:hover {
+  opacity: 0.85;
+  border-color: var(--vscode-panel-border);
+}
+
+.tab-btn.active {
+  opacity: 1;
+  border-color: var(--vscode-focusBorder);
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+}
+
+/* Panels */
+.panel {
+  display: none;
+}
+
+.panel.active {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Clock display */
+.clock-time {
+  font-size: 42px;
+  font-weight: 300;
+  letter-spacing: 2px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--vscode-foreground);
+  padding: 16px 0;
+}
+
+.clock-date {
+  font-size: 13px;
+  text-align: center;
+  opacity: 0.65;
+}
+
+/* Timer / Stopwatch shared */
+.time-display {
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: 3px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  padding: 12px 0;
+  color: var(--vscode-foreground);
+}
+
+.time-display.running {
+  color: var(--vscode-terminal-ansiGreen);
+}
+
+.time-display.finished {
+  color: var(--vscode-errorForeground);
+}
+
+/* Form fields */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.field label {
+  font-size: 11px;
+  opacity: 0.7;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field input,
+.field textarea {
+  background: var(--vscode-input-background);
+  color: var(--vscode-input-foreground);
+  border: 1px solid var(--vscode-input-border);
+  border-radius: 3px;
+  padding: 6px 8px;
+  font-family: var(--vscode-font-family);
+  font-size: 13px;
+  outline: none;
+  resize: none;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--vscode-focusBorder);
+}
+
+/* Duration input row */
+.duration-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.duration-row input[type="number"] {
+  width: 60px;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.duration-row input[type="number"]::-webkit-inner-spin-button,
+.duration-row input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+}
+
+.duration-row span {
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+/* Buttons */
+.btn-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn {
+  flex: 1;
+  padding: 7px 12px;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--vscode-font-family);
+  transition: opacity 0.15s;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-primary {
+  background: var(--vscode-button-background);
+  color: var(--vscode-button-foreground);
+}
+
+.btn-secondary {
+  background: var(--vscode-button-secondaryBackground);
+  color: var(--vscode-button-secondaryForeground);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Meta info (title + desc display when running) */
+.meta {
+  text-align: center;
+}
+
+.meta-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.meta-desc {
+  font-size: 12px;
+  opacity: 0.65;
+}
