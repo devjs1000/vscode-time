@@ -1,4 +1,4 @@
-export function initTimer(container: HTMLElement): void {
+export function initTimer(container: HTMLElement, vscodeApi: { postMessage(msg: unknown): void } | null): void {
   const display = container.querySelector<HTMLElement>('.timer-display')!;
   const titleInput = container.querySelector<HTMLInputElement>('#timer-title')!;
   const descInput = container.querySelector<HTMLTextAreaElement>('#timer-desc')!;
@@ -45,23 +45,11 @@ export function initTimer(container: HTMLElement): void {
     resetBtn.disabled = total === 0;
   }
 
-  function showCompletionPopup() {
-    const overlay = document.createElement('div');
-    overlay.className = 'timer-complete-overlay';
-    const title = metaTitleEl.textContent || 'Timer';
-    const desc = metaDescEl.textContent || '';
-    overlay.innerHTML = `
-      <div class="timer-complete-card">
-        <div class="timer-complete-icon">&#10003;</div>
-        <div class="timer-complete-title">${title}</div>
-        ${desc ? `<div class="timer-complete-desc">${desc}</div>` : ''}
-        <div class="timer-complete-label">Timer complete!</div>
-        <button class="btn btn-primary timer-complete-dismiss">Dismiss</button>
-      </div>
-    `;
-    document.body.appendChild(overlay);
-    overlay.querySelector('.timer-complete-dismiss')!.addEventListener('click', () => {
-      overlay.remove();
+  function notifyComplete() {
+    vscodeApi?.postMessage({
+      type: 'timerComplete',
+      title: metaTitleEl.textContent || 'Timer',
+      desc: metaDescEl.textContent || '',
     });
   }
 
@@ -72,7 +60,7 @@ export function initTimer(container: HTMLElement): void {
       running = false;
       updateDisplay();
       setButtonStates();
-      showCompletionPopup();
+      notifyComplete();
       return;
     }
     remaining--;

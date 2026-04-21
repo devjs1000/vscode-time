@@ -98,6 +98,10 @@ function startClock() {
   stopClockTick = initClock(document.getElementById('panel-clock')!);
 }
 
+const vscodeApi = typeof (window as any).acquireVsCodeApi === 'function'
+  ? (window as any).acquireVsCodeApi()
+  : null;
+
 startClock();
-initTimer(document.getElementById('panel-timer')!);
+initTimer(document.getElementById('panel-timer')!, vscodeApi);
 initStopwatch(document.getElementById('panel-stopwatch')!);
