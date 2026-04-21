@@ -1,0 +1,41 @@
+{
+  "name": "vscode-time",
+  "displayName": "Time",
+  "description": "Clock, Timer, and Stopwatch in the sidebar",
+  "version": "0.0.1",
+  "engines": { "vscode": "^1.85.0" },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "time-sidebar",
+          "title": "Time",
+          "icon": "$(clock)"
+        }
+      ]
+    },
+    "views": {
+      "time-sidebar": [
+        {
+          "type": "webview",
+          "id": "timeView",
+          "name": "Time"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "build": "node esbuild.js",
+    "watch": "node esbuild.js --watch",
+    "package": "pnpm build && vsce package --no-dependencies"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.85.0",
+    "@types/node": "^20.0.0",
+    "typescript": "^5.3.0",
+    "esbuild": "^0.20.0"
+  }
+}
