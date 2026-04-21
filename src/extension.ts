@@ -1,8 +1,15 @@
 import * as vscode from 'vscode';
-import { TimeViewProvider } from './TimeViewProvider';
+import { TimeViewProvider, startClock } from './TimeViewProvider';
 
 export function activate(context: vscode.ExtensionContext): void {
-  const provider = new TimeViewProvider(context.extensionUri);
+  const statusBar = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Right, 100);
+  statusBar.show();
+  context.subscriptions.push(statusBar);
+
+  const clockRef = { stop: () => {} };
+  startClock(statusBar, clockRef);
+
+  const provider = new TimeViewProvider(context.extensionUri, statusBar, clockRef);
   context.subscriptions.push(
     vscode.window.registerWebviewViewProvider(TimeViewProvider.viewType, provider, {
       webviewOptions: { retainContextWhenHidden: true },

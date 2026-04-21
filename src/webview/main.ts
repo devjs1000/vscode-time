@@ -104,4 +104,4 @@ const vscodeApi = typeof (window as any).acquireVsCodeApi === 'function'
 
 startClock();
 initTimer(document.getElementById('panel-timer')!, vscodeApi);
-initStopwatch(document.getElementById('panel-stopwatch')!);
+initStopwatch(document.getElementById('panel-stopwatch')!, vscodeApi);

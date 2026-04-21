@@ -3,7 +3,11 @@ import * as vscode from 'vscode';
 export class TimeViewProvider implements vscode.WebviewViewProvider {
   public static readonly viewType = 'timeView';
 
-  constructor(private readonly _extensionUri: vscode.Uri) {}
+  constructor(
+    private readonly _extensionUri: vscode.Uri,
+    private readonly _statusBar: vscode.StatusBarItem,
+    private readonly _clockInterval: { stop(): void }
+  ) {}
 
   resolveWebviewView(
     webviewView: vscode.WebviewView,
@@ -18,8 +22,37 @@ export class TimeViewProvider implements vscode.WebviewViewProvider {
     webviewView.webview.html = this._getHtml(webviewView.webview);
 
     webviewView.webview.onDidReceiveMessage(msg => {
-      if (msg.type === 'timerComplete') {
-        showTimerCompletePanel(this._extensionUri, msg.title, msg.desc);
+      switch (msg.type) {
+        case 'timerStatus':
+          this._clockInterval.stop();
+          this._statusBar.text = msg.running
+            ? `$(clock) ${msg.display}`
+            : `$(debug-pause) ${msg.display}`;
+          this._statusBar.tooltip = msg.running ? 'Timer running' : 'Timer paused';
+          break;
+
+        case 'timerReset':
+          this._clockInterval.stop();
+          startClock(this._statusBar, this._clockInterval);
+          break;
+
+        case 'stopwatchStatus':
+          this._clockInterval.stop();
+          this._statusBar.text = msg.running
+            ? `$(watch) ${msg.display}`
+            : `$(debug-pause) ${msg.display}`;
+          this._statusBar.tooltip = msg.running ? 'Stopwatch running' : 'Stopwatch paused';
+          break;
+
+        case 'stopwatchReset':
+          this._clockInterval.stop();
+          startClock(this._statusBar, this._clockInterval);
+          break;
+
+        case 'timerComplete':
+          startClock(this._statusBar, this._clockInterval);
+          showTimerCompletePanel(this._extensionUri, msg.title, msg.desc);
+          break;
       }
     });
   }
@@ -47,6 +80,21 @@ export class TimeViewProvider implements vscode.WebviewViewProvider {
 </body>
 </html>`;
   }
+}
+
+export function startClock(
+  statusBar: vscode.StatusBarItem,
+  ref: { stop(): void }
+): void {
+  ref.stop();
+  function update() {
+    const now = new Date();
+    statusBar.text = `$(clock) ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}`;
+    statusBar.tooltip = 'Current time';
+  }
+  update();
+  const id = setInterval(update, 1000);
+  ref.stop = () => clearInterval(id);
 }
 
 function showTimerCompletePanel(extensionUri: vscode.Uri, title: string, desc: string): void {
@@ -109,7 +157,7 @@ function showTimerCompletePanel(extensionUri: vscode.Uri, title: string, desc: s
 </head>
 <body>
   <div class="card">
-    <div class="icon">✓</div>
+    <div class="icon">&#10003;</div>
     <div class="title">${escapeHtml(title)}</div>
     ${desc ? `<div class="desc">${escapeHtml(desc)}</div>` : ''}
     <div class="label">Timer Complete</div>

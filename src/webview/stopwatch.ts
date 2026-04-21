@@ -1,4 +1,4 @@
-export function initStopwatch(container: HTMLElement): void {
+export function initStopwatch(container: HTMLElement, vscodeApi: { postMessage(msg: unknown): void } | null): void {
   const display = container.querySelector<HTMLElement>('.sw-display')!;
   const titleInput = container.querySelector<HTMLInputElement>('#sw-title')!;
   const descInput = container.querySelector<HTMLTextAreaElement>('#sw-desc')!;
@@ -38,9 +38,18 @@ export function initStopwatch(container: HTMLElement): void {
     resetBtn.disabled = !started;
   }
 
+  function postStatus(active: boolean) {
+    vscodeApi?.postMessage({
+      type: 'stopwatchStatus',
+      running: active,
+      display: formatTime(elapsed),
+    });
+  }
+
   function tick() {
     elapsed++;
     updateDisplay();
+    if (elapsed % 100 === 0) postStatus(true);
   }
 
   startBtn.addEventListener('click', () => {
@@ -56,6 +65,7 @@ export function initStopwatch(container: HTMLElement): void {
     intervalId = setInterval(tick, 10);
     updateDisplay();
     setButtonStates();
+    postStatus(true);
   });
 
   pauseBtn.addEventListener('click', () => {
@@ -65,6 +75,7 @@ export function initStopwatch(container: HTMLElement): void {
     running = false;
     updateDisplay();
     setButtonStates();
+    postStatus(false);
   });
 
   resetBtn.addEventListener('click', () => {
@@ -80,6 +91,7 @@ export function initStopwatch(container: HTMLElement): void {
     display.classList.remove('running');
     updateDisplay();
     setButtonStates();
+    vscodeApi?.postMessage({ type: 'stopwatchReset' });
   });
 
   metaEl.style.display = 'none';

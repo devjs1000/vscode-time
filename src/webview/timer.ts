@@ -45,6 +45,14 @@ export function initTimer(container: HTMLElement, vscodeApi: { postMessage(msg: 
     resetBtn.disabled = total === 0;
   }
 
+  function postStatus() {
+    vscodeApi?.postMessage({
+      type: 'timerStatus',
+      running,
+      display: formatTime(remaining),
+    });
+  }
+
   function notifyComplete() {
     vscodeApi?.postMessage({
       type: 'timerComplete',
@@ -60,11 +68,13 @@ export function initTimer(container: HTMLElement, vscodeApi: { postMessage(msg: 
       running = false;
       updateDisplay();
       setButtonStates();
+      vscodeApi?.postMessage({ type: 'timerReset' });
       notifyComplete();
       return;
     }
     remaining--;
     updateDisplay();
+    postStatus();
   }
 
   startBtn.addEventListener('click', () => {
@@ -87,6 +97,7 @@ export function initTimer(container: HTMLElement, vscodeApi: { postMessage(msg: 
     intervalId = setInterval(tick, 1000);
     updateDisplay();
     setButtonStates();
+    postStatus();
   });
 
   pauseBtn.addEventListener('click', () => {
@@ -96,6 +107,7 @@ export function initTimer(container: HTMLElement, vscodeApi: { postMessage(msg: 
     running = false;
     updateDisplay();
     setButtonStates();
+    postStatus();
   });
 
   resetBtn.addEventListener('click', () => {
@@ -114,6 +126,7 @@ export function initTimer(container: HTMLElement, vscodeApi: { postMessage(msg: 
     display.classList.remove('running', 'finished');
     updateDisplay();
     setButtonStates();
+    vscodeApi?.postMessage({ type: 'timerReset' });
   });
 
   [hoursInput, minutesInput, secondsInput].forEach(input => {
