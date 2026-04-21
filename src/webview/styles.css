@@ -203,13 +203,13 @@ body {
 
 /* Timer completion overlay */
 .timer-complete-overlay {
-  position: absolute;
+  position: fixed;
   inset: 0;
   background: var(--vscode-sideBar-background);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 9999;
   animation: fadeIn 0.2s ease;
 }
 

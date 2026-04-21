@@ -48,17 +48,18 @@ export function initTimer(container: HTMLElement): void {
   function showCompletionPopup() {
     const overlay = document.createElement('div');
     overlay.className = 'timer-complete-overlay';
+    const title = metaTitleEl.textContent || 'Timer';
+    const desc = metaDescEl.textContent || '';
     overlay.innerHTML = `
       <div class="timer-complete-card">
-        <div class="timer-complete-icon">✓</div>
-        <div class="timer-complete-title">${metaTitleEl.textContent || 'Timer'}</div>
-        ${metaDescEl.textContent ? `<div class="timer-complete-desc">${metaDescEl.textContent}</div>` : ''}
+        <div class="timer-complete-icon">&#10003;</div>
+        <div class="timer-complete-title">${title}</div>
+        ${desc ? `<div class="timer-complete-desc">${desc}</div>` : ''}
         <div class="timer-complete-label">Timer complete!</div>
         <button class="btn btn-primary timer-complete-dismiss">Dismiss</button>
       </div>
     `;
-    container.style.position = 'relative';
-    container.appendChild(overlay);
+    document.body.appendChild(overlay);
     overlay.querySelector('.timer-complete-dismiss')!.addEventListener('click', () => {
       overlay.remove();
     });
