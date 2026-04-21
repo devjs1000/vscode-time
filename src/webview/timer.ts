@@ -31,10 +31,37 @@ export function initTimer(container: HTMLElement): void {
     display.classList.toggle('finished', remaining === 0 && total > 0 && !running);
   }
 
+  function getInputTotal(): number {
+    const h = parseInt(hoursInput.value || '0', 10) || 0;
+    const m = parseInt(minutesInput.value || '0', 10) || 0;
+    const s = parseInt(secondsInput.value || '0', 10) || 0;
+    return h * 3600 + m * 60 + s;
+  }
+
   function setButtonStates() {
-    startBtn.disabled = running || remaining === 0;
+    const hasInput = total > 0 ? remaining > 0 : getInputTotal() > 0;
+    startBtn.disabled = running || !hasInput;
     pauseBtn.disabled = !running;
     resetBtn.disabled = total === 0;
+  }
+
+  function showCompletionPopup() {
+    const overlay = document.createElement('div');
+    overlay.className = 'timer-complete-overlay';
+    overlay.innerHTML = `
+      <div class="timer-complete-card">
+        <div class="timer-complete-icon">✓</div>
+        <div class="timer-complete-title">${metaTitleEl.textContent || 'Timer'}</div>
+        ${metaDescEl.textContent ? `<div class="timer-complete-desc">${metaDescEl.textContent}</div>` : ''}
+        <div class="timer-complete-label">Timer complete!</div>
+        <button class="btn btn-primary timer-complete-dismiss">Dismiss</button>
+      </div>
+    `;
+    container.style.position = 'relative';
+    container.appendChild(overlay);
+    overlay.querySelector('.timer-complete-dismiss')!.addEventListener('click', () => {
+      overlay.remove();
+    });
   }
 
   function tick() {
@@ -44,6 +71,7 @@ export function initTimer(container: HTMLElement): void {
       running = false;
       updateDisplay();
       setButtonStates();
+      showCompletionPopup();
       return;
     }
     remaining--;
@@ -97,6 +125,10 @@ export function initTimer(container: HTMLElement): void {
     display.classList.remove('running', 'finished');
     updateDisplay();
     setButtonStates();
+  });
+
+  [hoursInput, minutesInput, secondsInput].forEach(input => {
+    input.addEventListener('input', () => { if (total === 0) setButtonStates(); });
   });
 
   metaEl.style.display = 'none';
