@@ -3,10 +3,28 @@
   "displayName": "Time",
   "description": "Clock, Timer, and Stopwatch in the sidebar",
   "version": "0.0.1",
-  "engines": { "vscode": "^1.85.0" },
-  "categories": ["Other"],
-  "activationEvents": ["onStartupFinished"],
+  "publisher": "devjs1000",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other",
+    "Productivity",
+    "Time Management",
+    "Clock",
+    "Timer",
+    "Stopwatch",
+    "Pomodoro",
+    "Timekeeping"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
   "main": "./dist/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/devjs1000/vscode-time"
+  },
   "contributes": {
     "viewsContainers": {
       "activitybar": [
